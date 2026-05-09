@@ -50,22 +50,25 @@ def verify():
 @app.route("/webhook", methods=["POST"])
 def webhook():
     data = request.json
+    print(data)
 
     try:
-        for entry in data.get("entry", []):
-            for messaging in entry.get("messaging", []):
-                sender_id = messaging["sender"]["id"]
-                message_text = messaging["message"]["text"].lower()
+        if "entry" in data:
+            for entry in data["entry"]:
+                if "messaging" in entry:
+                    for event in entry["messaging"]:
+                        sender_id = event["sender"]["id"]
 
-                keywords = ["rate", "today rate", "aed rate"]
+                        if "message" in event and "text" in event["message"]:
+                            message_text = event["message"]["text"].lower()
 
-                if any(k in message_text for k in keywords):
-                    rate = get_rate()
-                    reply = f"Current AED to INR transfer rate is = ₹{rate} per AED"
-                    send_reply(sender_id, reply)
+                            if "rate" in message_text:
+                                rate = get_rate()
+                                reply = f"Current AED to INR transfer rate is = ₹{rate} per AED"
+                                send_reply(sender_id, reply)
 
     except Exception as e:
-        print(e)
+        print("ERROR:", e)
 
     return "ok", 200
 
