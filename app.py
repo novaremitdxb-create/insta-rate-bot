@@ -16,15 +16,21 @@ def get_rate():
 def send_reply(recipient_id, message):
     url = "https://graph.facebook.com/v22.0/me/messages"
 
-    payload = {
-        "recipient": {"id": recipient_id},
-        "message": {"text": message},
-        "messaging_type": "RESPONSE"
+    headers = {
+        "Authorization": f"Bearer {PAGE_ACCESS_TOKEN}",
+        "Content-Type": "application/json"
     }
 
-    params = {"access_token": PAGE_ACCESS_TOKEN}
+    payload = {
+        "recipient": {
+            "id": recipient_id
+        },
+        "message": {
+            "text": message
+        }
+    }
 
-    requests.post(url, json=payload, params=params, timeout=10)
+    requests.post(url, json=payload, headers=headers, timeout=10)
 
 @app.route("/")
 def home():
