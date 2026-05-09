@@ -25,12 +25,15 @@ def send_reply(recipient_id, message):
         "recipient": {
             "id": recipient_id
         },
+        "messaging_type": "RESPONSE",
         "message": {
             "text": message
         }
     }
 
-    requests.post(url, json=payload, headers=headers, timeout=10)
+    response = requests.post(url, json=payload, headers=headers)
+
+    print("SEND RESPONSE:", response.text)
 
 @app.route("/")
 def home():
